@@ -7,7 +7,8 @@
 | **Model Name** | LLMProtect Adversarial Detector |
 | **Version** | 1.0 |
 | **Architecture** | Hybrid CNN + Transformer |
-| **Parameters** | ~25M |
+| **Parameters** | ~11M |
+| **Model Size** | 25.14 MB |
 | **Input** | Text prompts (max 512 tokens) |
 | **Output** | Binary classification (adversarial/benign) + confidence score |
 
@@ -43,32 +44,30 @@ The model was trained on a mixed dataset comprising:
 
 ## Evaluation Results
 
-### Overall Performance (Paper Evaluation)
+### Training Evaluation (Actual)
 
 | Metric | Value |
 |--------|-------|
-| F1 Score | 0.94 |
-| Precision | 0.92 |
-| Recall (Attacks) | 0.95 |
-| False Allow Rate | 3% |
-| Benign FPR | 7% |
+| Detection Rate | 98.68% |
+| F1 Score | 0.9934 |
+| Precision | 100.00% |
+| AUC-ROC | 0.9996 |
+| False Negative Rate | 1.32% |
+| False Positive Rate | 0.00% |
 
-### Per-Category Performance
+### Confusion Matrix
 
-| Category | Precision | Recall | F1 |
-|----------|-----------|--------|-----|
-| Prompt Injection | 0.96 | 0.94 | 0.95 |
-| Jailbreak | 0.93 | 0.91 | 0.92 |
-| Indirect/RAG Injection | 0.89 | 0.87 | 0.88 |
-| Tool Misuse | 0.91 | 0.89 | 0.90 |
+| | Predicted Benign | Predicted Adversarial |
+|--|------------------|----------------------|
+| Actual Benign | 2,690 (TN) | 0 (FP) |
+| Actual Adversarial | 10 (FN) | 748 (TP) |
 
 ### Latency
 
 | Metric | Value |
 |--------|-------|
-| Mean End-to-End | 32.5 ms |
-| P95 Latency | 48.2 ms |
-| P99 Latency | 62.1 ms |
+| Mean Latency | 0.13 ms |
+| Throughput | 7,500 prompts/sec |
 
 ## Limitations
 
@@ -90,8 +89,8 @@ The model was trained on a mixed dataset comprising:
 ## Technical Specifications
 
 ### Compute Requirements
-- **Training**: Single GPU (8GB+ VRAM), ~2 hours for 10 epochs
-- **Inference**: CPU-only capable, ~32ms per prediction
+- **Training**: Single GPU (8GB+ VRAM), ~15 minutes for 10 epochs
+- **Inference**: CPU-only capable, ~0.13ms per prediction
 
 ### Dependencies
 - PyTorch 2.0+
