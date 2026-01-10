@@ -14,7 +14,7 @@ Modern AI agents that can execute tools, query databases, and perform actions on
 | **1. Neural Detection** | CNN-Transformer Hybrid | Detects adversarial patterns in prompts |
 | **2. Cryptographic Enforcement** | Ed25519 Signatures | Binds authorized actions to specific prompts |
 | **3. Scoped Credentials** | Token Management | Least-privilege access control |
-| **4. Tamper-Proof Audit** | Merkle Trees | Immutable logging for forensics |
+| **4. Tamper-Proof Audit** | Hash Chain | Immutable logging for forensics |
 
 ## 🏗️ Architecture
 
@@ -29,8 +29,7 @@ User Input
 │  │ (CNN-Transformer)   │    (Ed25519 Signing) │   │
 │  └────────────────┘    └─────────────────────┘   │
 │           ↓                      ↓               │
-│  ┌────────────────────────────────────────────┐  │
-│  │           Merkle Tree Audit Log            │  │
+│  │           Hash Chain Audit Log                │  │
 │  └────────────────────────────────────────────┘  │
 └──────────────────────────────────────────────────┘
     ↓
@@ -107,7 +106,7 @@ d:\anti-llm\
 │   ├── crypto/                 # Cryptographic layer
 │   │   ├── keys.py             # Ed25519 key management
 │   │   ├── signing.py          # Authorization tokens
-│   │   └── merkle.py           # Tamper-proof audit log
+│   │   └── merkle.py           # Hash-chain audit log
 │   │
 │   ├── core/                   # Integration
 │   │   ├── pipeline.py         # Unified detection pipeline
@@ -170,7 +169,7 @@ OUTPUT: P(adversarial) ∈ [0, 1]
 ### Security Guarantees
 - **Ed25519 Signatures**: 128-bit security level
 - **Replay Prevention**: Nonce-based with 15-minute TTL
-- **Tamper Detection**: Merkle tree integrity verification
+- **Tamper Detection**: Hash chain integrity verification
 - **Non-repudiation**: Cryptographic proof of authorization
 
 ## 📊 Achieved Metrics
@@ -232,7 +231,7 @@ python -m pytest tests/ --cov=src --cov-report=html
 ## 📚 References
 
 - **Ed25519**: Bernstein, D.J., et al. "High-speed high-security signatures"
-- **Merkle Trees**: Merkle, R.C. "A Digital Signature Based on a Conventional Encryption Function"
+- **Hash Chains**: Haber, S., Stornetta, W.S. "How to Time-Stamp a Digital Document"
 - **Transformer**: Vaswani, A., et al. "Attention Is All You Need"
 
 ## 📄 License
