@@ -292,7 +292,7 @@ class IntentBindingDemo {
             entry.innerHTML = `
                 <span class="time">[${timeStr}]</span>
                 <span class="decision-tag ${lastDecision}">${lastDecision.replace(/_/g, ' ')}</span>
-                <span class="hash">Hash: ${this.truncateHash(result.merkle_root || 'pending')}</span>
+                <span class="hash">Hash: ${this.truncateHash(result.chain_tip || 'pending')}</span>
                 <span class="chain-arrow">→</span>
                 <span class="prev-hash">prev: ${this.truncateHash('linked')}</span>
                 <span class="risk">${(Math.random() * 0.5).toFixed(2)}</span>

@@ -165,7 +165,7 @@ class AuditLogResponse(BaseModel):
     total_entries: int
     decisions: Dict[str, int]
     avg_risk_score: float
-    merkle_root: Optional[str]
+    chain_tip: Optional[str]
     integrity_valid: bool
 
 

@@ -281,7 +281,7 @@
                     await delay(150);
                     updateStep(0, 'complete', `${tokens} tokens`,
                         `${tokens} tokens processed, padded to max length`,
-                        [`input_text = "${prompt.substring(0, 30)}..."`, `char_count = ${chars}`, `token_count = ${tokens}`, `vocab_size = 30,000`, `max_seq_len = 512`, `padding = "max_length"`]
+                        [`input_text = "${prompt.substring(0, 30)}..."`, `char_count = ${chars}`, `token_count = ${tokens}`, `vocab_size = 30,522`, `max_seq_len = 512`, `padding = "max_length"`]
                     );
 
                     // Step 2: CNN Pattern Detection
@@ -354,7 +354,7 @@
                     const auditData = await auditResponse.json();
                     updateStep(6, 'complete', 'VALID',
                         `Entry #${auditData.total_entries} added, chain integrity verified`,
-                        [`algorithm = SHA-256 hash chain`, `entry_count = ${auditData.total_entries}`, `merkle_root = ${auditData.merkle_root?.substring(0, 24) || 'null'}...`, `// Any modification breaks chain`]
+                        [`algorithm = SHA-256 hash chain`, `entry_count = ${auditData.total_entries}`, `chain_tip = ${auditData.chain_tip?.substring(0, 24) || 'null'}...`, `// Any modification breaks chain`]
                     );
 
                     setResult({ ...data, authorization: authData, promptHash });

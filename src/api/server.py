@@ -16,6 +16,7 @@ from fastapi.staticfiles import StaticFiles
 from typing import Optional
 from pathlib import Path
 import uvicorn
+import torch
 
 from .schemas import (
     DetectionRequest, DetectionResponse,
@@ -104,14 +105,64 @@ def create_app(
         global _pipeline, _credential_manager
         
         from ..crypto.keys import KeyManager
+        from ..models.architecture import AdversarialDetector
+        from ..models.inference import InferencePipeline
+        from ..data.tokenizer import PromptTokenizer
         
+        # Determine paths
         key_path = key_storage_path or Path("keys")
         audit_path = audit_log_path or Path("audit_logs")
+        checkpoint_path = Path("checkpoints/best_model.pt")
+        vocab_path = Path("checkpoints/vocab.json")
+        
+        # Load ML Pipeline if model exists and wasn't provided
+        loaded_ml_pipeline = ml_pipeline
+        
+        if loaded_ml_pipeline is None and checkpoint_path.exists():
+            print("Loading trained ML model for API...")
+            try:
+                # Load checkpoint
+                checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
+                config = checkpoint.get('config', {})
+                state_dict = checkpoint['model_state_dict']
+                actual_vocab_size = state_dict['embedding.weight'].shape[0]
+                
+                # Reconstruct model
+                model = AdversarialDetector(
+                    vocab_size=actual_vocab_size,
+                    embedding_dim=config.get('embedding_dim', 256),
+                    max_seq_length=config.get('max_seq_length', 512),
+                    cnn_filters=config.get('cnn_filters', [128, 256]),
+                    cnn_kernel_sizes=config.get('cnn_kernel_sizes', [3, 5]),
+                    num_transformer_layers=config.get('num_transformer_layers', 4),
+                    num_attention_heads=config.get('num_attention_heads', 8),
+                    transformer_hidden_dim=config.get('transformer_hidden_dim', 1024),
+                    classifier_hidden_dims=config.get('classifier_hidden_dims', [512, 256]),
+                    dropout=0.1,
+                    classifier_dropout=0.3
+                )
+                model.load_state_dict(state_dict)
+                model.eval()
+                
+                # Setup tokenizer
+                tokenizer = PromptTokenizer(vocab_size=actual_vocab_size, max_length=512)
+                if vocab_path.exists():
+                    tokenizer.load_vocab(vocab_path)
+                
+                # Initialize inference pipeline
+                loaded_ml_pipeline = InferencePipeline(
+                    model=model,
+                    tokenizer=tokenizer,
+                    device="cpu"
+                )
+                print(f"✓ ML model loaded successfully (vocab_size={actual_vocab_size})")
+            except Exception as e:
+                print(f"⚠️ Failed to load ML model: {e}. Falling back to heuristics.")
         
         key_manager = KeyManager(key_path)
         
         _pipeline = IntentBindingPipeline(
-            ml_pipeline=ml_pipeline,
+            ml_pipeline=loaded_ml_pipeline,
             key_manager=key_manager,
             audit_log_path=audit_path
         )
@@ -263,7 +314,7 @@ def create_app(
             total_entries=stats.get('total_entries', 0),
             decisions=stats.get('decisions', {}),
             avg_risk_score=stats.get('avg_risk_score', 0.0),
-            merkle_root=stats.get('merkle_root'),
+            chain_tip=stats.get('latest_hash'),
             integrity_valid=integrity.get('valid', True)
         )
     
