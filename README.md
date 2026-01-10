@@ -1,0 +1,227 @@
+# Cryptographic Intent Binding for Adversarial Manipulation Detection
+
+[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+
+A comprehensive security framework combining **ML-based adversarial detection** with **cryptographic authorization enforcement** for protecting agentic AI systems from manipulation attacks.
+
+## 🎯 Project Overview
+
+Modern AI agents that can execute tools, query databases, and perform actions on behalf of users are vulnerable to **adversarial manipulation attacks** - carefully crafted inputs that exploit agent reasoning to cause unauthorized actions. This project implements a multi-layered defense system:
+
+| Layer | Technology | Purpose |
+|-------|------------|---------|
+| **1. Neural Detection** | CNN-Transformer Hybrid | Detects adversarial patterns in prompts |
+| **2. Cryptographic Enforcement** | Ed25519 Signatures | Binds authorized actions to specific prompts |
+| **3. Scoped Credentials** | Token Management | Least-privilege access control |
+| **4. Tamper-Proof Audit** | Merkle Trees | Immutable logging for forensics |
+
+## 🏗️ Architecture
+
+```
+User Input
+    ↓
+┌──────────────────────────────────────────────────┐
+│              Intent Binding Pipeline              │
+├──────────────────────────────────────────────────┤
+│  ┌────────────────┐    ┌─────────────────────┐   │
+│  │   ML Detection │ →  │ Crypto Authorization │   │
+│  │ (CNN-Transformer)   │    (Ed25519 Signing) │   │
+│  └────────────────┘    └─────────────────────┘   │
+│           ↓                      ↓               │
+│  ┌────────────────────────────────────────────┐  │
+│  │           Merkle Tree Audit Log            │  │
+│  └────────────────────────────────────────────┘  │
+└──────────────────────────────────────────────────┘
+    ↓
+Decision: APPROVED | DENIED | REQUIRES_AUTHORIZATION
+```
+
+## 🚀 Quick Start
+
+### Installation
+
+```bash
+# Clone the repository
+cd d:\anti-llm
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Install package in development mode
+pip install -e .
+```
+
+### Run the Demo
+
+```bash
+python demo.py
+```
+
+### Start the API Server
+
+```bash
+python -m src.api.server
+
+# Access documentation at http://localhost:8000/docs
+```
+
+## 📁 Project Structure
+
+```
+d:\anti-llm\
+├── src/
+│   ├── data/                   # Dataset utilities
+│   │   ├── dataset.py          # HuggingFace dataset loading
+│   │   ├── generator.py        # Synthetic prompt generation
+│   │   ├── augmentations.py    # Data augmentation
+│   │   └── tokenizer.py        # Custom tokenizer
+│   │
+│   ├── models/                 # ML model implementation
+│   │   ├── architecture.py     # CNN-Transformer model
+│   │   ├── trainer.py          # Training loop
+│   │   └── inference.py        # Inference pipeline
+│   │
+│   ├── crypto/                 # Cryptographic layer
+│   │   ├── keys.py             # Ed25519 key management
+│   │   ├── signing.py          # Authorization tokens
+│   │   └── merkle.py           # Tamper-proof audit log
+│   │
+│   ├── core/                   # Integration
+│   │   ├── pipeline.py         # Unified detection pipeline
+│   │   └── credentials.py      # Scoped credential management
+│   │
+│   ├── api/                    # REST API
+│   │   ├── server.py           # FastAPI endpoints
+│   │   └── schemas.py          # Request/response models
+│   │
+│   └── evaluation/             # Metrics and benchmarks
+│       ├── metrics.py          # All evaluation metrics
+│       ├── benchmark.py        # Benchmark suite
+│       └── visualizations.py   # Plotting utilities
+│
+├── tests/                      # Test suite
+├── notebooks/                  # Jupyter notebooks
+├── demo.py                     # Interactive demonstration
+├── requirements.txt            # Dependencies
+└── README.md                   # This file
+```
+
+## 🔬 ML Model Architecture
+
+**Hybrid CNN-Transformer** for adversarial prompt classification:
+
+```
+INPUT PROMPT
+    ↓
+[Embedding Layer] → 256-dim embeddings
+    ↓
+[1D CNN Layers]
+│ - Conv1D (128 filters, kernel=3)
+│ - Conv1D (256 filters, kernel=5)
+│ → Extracts local adversarial patterns
+    ↓
+[Transformer Encoder] (4 layers, 8 heads)
+│ → Captures semantic manipulation
+    ↓
+[Classification Head]
+│ - Dense(512) → Dense(256) → Dense(1)
+    ↓
+OUTPUT: P(adversarial) ∈ [0, 1]
+```
+
+## 🔐 Cryptographic Components
+
+### Authorization Token Structure
+```json
+{
+  "prompt_hash": "SHA-256(normalized_prompt)",
+  "action": "execute_tool",
+  "target": "mcp://database/query",
+  "timestamp": 1704672000,
+  "expires_at": 1704672900,
+  "nonce": "32-byte random hex",
+  "signature": "Ed25519_signature"
+}
+```
+
+### Security Guarantees
+- **Ed25519 Signatures**: 128-bit security level
+- **Replay Prevention**: Nonce-based with 15-minute TTL
+- **Tamper Detection**: Merkle tree integrity verification
+- **Non-repudiation**: Cryptographic proof of authorization
+
+## 📊 Target Metrics
+
+| Metric | Target | Description |
+|--------|--------|-------------|
+| Detection Rate | >99% | Adversarial prompts detected |
+| False Negative Rate | <1% | Missed attacks |
+| False Positive Rate | <5% | Benign prompts incorrectly flagged |
+| F1 Score | >0.97 | Overall classification performance |
+| AUC-ROC | >0.99 | Discriminative ability |
+| Latency | <50ms | End-to-end processing time |
+
+## 🔌 API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/detect` | POST | Analyze prompt for adversarial patterns |
+| `/detect/batch` | POST | Batch prompt analysis |
+| `/authorize` | POST | Generate authorization token |
+| `/verify` | POST | Verify authorization token |
+| `/audit` | GET | Get audit log summary |
+| `/credentials` | POST | Create scoped credential |
+| `/health` | GET | Health check |
+
+## 📈 Datasets Used
+
+### Adversarial (Real Data)
+| Dataset | Source | Description |
+|---------|--------|-------------|
+| deepset/prompt-injections | HuggingFace | Prompt injection attacks |
+| rubend18/ChatGPT-Jailbreak-Prompts | HuggingFace | Jailbreak attempts |
+| **guychuk/open-prompt-injection** | HuggingFace | Indirect/RAG injection attacks |
+| **ai-safety-institute/AgentHarm** | HuggingFace | Tool misuse attacks |
+| **Mindgard/evaded-injections** | HuggingFace | Evasion-enhanced injections |
+| **PayloadsAllTheThings** | GitHub | SQL, Command, SSRF, Path, XSS payloads |
+
+### Benign
+| Dataset | Source | Description |
+|---------|--------|-------------|
+| Anthropic/hh-rlhf | HuggingFace | Human conversations |
+| tatsu-lab/alpaca | HuggingFace | Instruction-following |
+
+**Total**: ~41,000 examples (100% real data)
+
+## 🧪 Running Tests
+
+```bash
+# Run all tests
+python -m pytest tests/ -v
+
+# Run specific test module
+python -m pytest tests/test_crypto.py -v
+
+# Run with coverage
+python -m pytest tests/ --cov=src --cov-report=html
+```
+
+## 📚 References
+
+- **Ed25519**: Bernstein, D.J., et al. "High-speed high-security signatures"
+- **Merkle Trees**: Merkle, R.C. "A Digital Signature Based on a Conventional Encryption Function"
+- **Transformer**: Vaswani, A., et al. "Attention Is All You Need"
+
+## 📄 License
+
+MIT License - See LICENSE file for details.
+
+## 👥 Authors
+
+Research Team - Advanced AI Security
+
+---
+
+**Document Version**: 1.0  
+**Last Updated**: January 2026

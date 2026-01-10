@@ -1,0 +1,19 @@
+{
+  "detection_rate": 0.9828496042216359,
+  "false_negative_rate": 0.017150395778364115,
+  "false_positive_rate": 0.0003717472118959108,
+  "precision": 0.9986595174262735,
+  "f1_score": 0.990691489361702,
+  "auc_roc": 0.9996454178968328,
+  "mcc": 0.9881467072579757,
+  "average_precision": 0.9989768861811099,
+  "mean_latency_ms": 6.3889431824654705,
+  "throughput_per_second": 156.5204090004293,
+  "model_size_mb": 25.149921417236328,
+  "confusion_matrix": {
+    "tp": 745,
+    "fp": 1,
+    "fn": 13,
+    "tn": 2689
+  }
+}

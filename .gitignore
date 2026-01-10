@@ -1,0 +1,45 @@
+# Virtual environments
+venv/
+.venv/
+env/
+.env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Cached datasets (will re-download if needed)
+cache/
+
+# Pytest cache
+.pytest_cache/
+
+# IDE settings
+.vscode/
+.idea/
+
+# Intermediate checkpoints (keep only best_model.pt)
+checkpoints/checkpoint_epoch_*.pt
+
+# Audit logs (runtime generated)
+audit_logs/
+
+# Cryptographic keys (NEVER commit actual keys)
+keys/*.key
+keys/current.key
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Byte-compiled / optimized files
+*.pyc
+*.pyo
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
