@@ -118,12 +118,14 @@ d:\anti-llm\
 │   │
 │   └── evaluation/             # Metrics and benchmarks
 │       ├── metrics.py          # All evaluation metrics
-│       ├── benchmark.py        # Benchmark suite
-│       └── visualizations.py   # Plotting utilities
+├── checkpoints/                # Trained model files
+│   ├── best_model.pt           # Pre-trained model
+│   └── vocab.json              # Tokenizer vocabulary
 │
-├── tests/                      # Test suite
-├── notebooks/                  # Jupyter notebooks
+├── tests/                      # Test suite (77 tests)
 ├── demo.py                     # Interactive demonstration
+├── train.py                    # Training script
+├── run_inference.py            # Inference CLI
 ├── requirements.txt            # Dependencies
 └── README.md                   # This file
 ```

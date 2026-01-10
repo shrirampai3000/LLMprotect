@@ -118,7 +118,7 @@ If you use this model in your research, please cite:
 ```bibtex
 @software{llmprotect2026,
   title={LLMProtect: Cryptographic Intent Binding for Adversarial Manipulation Detection},
-  author={[Your Name]},
+  author={Shriram Pai},
   year={2026},
   url={https://github.com/shrirampai3000/LLMprotect}
 }

@@ -99,7 +99,7 @@ Entry1 ─→ Entry2 ─→ Entry3 ─→ Entry4
                           ↓
 ┌─────────────────────────────────────────────────────────────┐
 │ EMBEDDING LAYER                                             │
-│ vocab_size=30,000, embedding_dim=256                        │
+│ vocab_size=~10,600 (built from training data), embedding_dim=256 │
 │ + Positional Encoding (sinusoidal)                          │
 └─────────────────────────┬───────────────────────────────────┘
                           ↓
