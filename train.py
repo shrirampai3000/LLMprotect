@@ -139,6 +139,12 @@ def main():
     vocab_size = len(tokenizer)
     print(f"   Built custom tokenizer (vocab: {vocab_size})")
     
+    # Save vocabulary for inference
+    vocab_path = Path(args.checkpoint_dir) / "vocab.json"
+    vocab_path.parent.mkdir(parents=True, exist_ok=True)
+    tokenizer.save_vocab(vocab_path)
+    print(f"   Saved vocabulary to: {vocab_path}")
+    
     # Step 4: Create data loaders
     print("\n🔄 Creating data loaders...")
     

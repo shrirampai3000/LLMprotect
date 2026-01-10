@@ -289,6 +289,68 @@ def create_app(
             max_uses=credential.max_uses
         )
     
+    @app.get("/evaluation", tags=["Evaluation"])
+    async def get_evaluation_metrics():
+        """
+        Get model evaluation metrics for research paper.
+        
+        Returns comprehensive metrics including detection rates, F1 scores,
+        confusion matrix, and latency measurements.
+        """
+        import json
+        
+        # Load both evaluation files
+        results = {}
+        
+        # Training evaluation results
+        eval_path = Path("checkpoints/evaluation_results.json")
+        if eval_path.exists():
+            with open(eval_path) as f:
+                results["training_evaluation"] = json.load(f)
+        
+        # Paper-safe conservative metrics
+        paper_path = Path("checkpoints/evaluation_results_paper.json")
+        if paper_path.exists():
+            with open(paper_path) as f:
+                results["paper_metrics"] = json.load(f)
+        
+        # Model info
+        model_path = Path("checkpoints/best_model.pt")
+        if model_path.exists():
+            import os
+            results["model_info"] = {
+                "model_file": "best_model.pt",
+                "model_size_bytes": os.path.getsize(model_path),
+                "model_size_mb": round(os.path.getsize(model_path) / (1024 * 1024), 2)
+            }
+        
+        # Add summary for easy access
+        if "training_evaluation" in results:
+            te = results["training_evaluation"]
+            results["summary"] = {
+                "detection_rate": f"{te.get('detection_rate', 0) * 100:.2f}%",
+                "false_negative_rate": f"{te.get('false_negative_rate', 0) * 100:.2f}%",
+                "false_positive_rate": f"{te.get('false_positive_rate', 0) * 100:.2f}%",
+                "f1_score": f"{te.get('f1_score', 0):.4f}",
+                "precision": f"{te.get('precision', 0):.4f}",
+                "auc_roc": f"{te.get('auc_roc', 0):.4f}",
+                "mean_latency_ms": f"{te.get('mean_latency_ms', 0):.2f}ms",
+                "model_size_mb": f"{te.get('model_size_mb', 0):.2f}MB"
+            }
+        
+        return results
+    
+    @app.get("/evaluation/html", include_in_schema=False)
+    async def evaluation_page():
+        """Serve the evaluation metrics HTML page."""
+        from fastapi.responses import FileResponse
+        eval_page = Path(__file__).parent / "static" / "evaluation.html"
+        if eval_page.exists():
+            return FileResponse(eval_page)
+        else:
+            from fastapi.responses import HTMLResponse
+            return HTMLResponse("<h1>Evaluation page not found</h1>")
+    
     return app
 
 

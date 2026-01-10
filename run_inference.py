@@ -22,14 +22,18 @@ def load_trained_model(checkpoint_path: str = "checkpoints/best_model.pt"):
     """Load the trained model from checkpoint."""
     
     # Load checkpoint
-    checkpoint = torch.load(checkpoint_path, map_location="cpu")
+    checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
     
-    # Get config from checkpoint
+    # Get config from checkpoint, or infer from saved weights
     config = checkpoint.get('config', {})
+    
+    # Auto-detect vocab_size from embedding weights if not in config
+    state_dict = checkpoint['model_state_dict']
+    actual_vocab_size = state_dict['embedding.weight'].shape[0]
     
     # Create model with same architecture
     model = AdversarialDetector(
-        vocab_size=config.get('vocab_size', 30522),  # Custom tokenizer vocab
+        vocab_size=actual_vocab_size,  # Use actual vocab size from saved weights
         embedding_dim=config.get('embedding_dim', 256),
         max_seq_length=config.get('max_seq_length', 512),
         cnn_filters=config.get('cnn_filters', [128, 256]),
@@ -43,11 +47,11 @@ def load_trained_model(checkpoint_path: str = "checkpoints/best_model.pt"):
     )
     
     # Load weights
-    model.load_state_dict(checkpoint['model_state_dict'])
+    model.load_state_dict(state_dict)
     model.eval()
     
     # Create tokenizer (load from saved vocabulary if available)
-    tokenizer = PromptTokenizer(vocab_size=30522, max_length=512)
+    tokenizer = PromptTokenizer(vocab_size=actual_vocab_size, max_length=512)
     vocab_path = Path("checkpoints/vocab.json")
     if vocab_path.exists():
         tokenizer.load_vocab(vocab_path)

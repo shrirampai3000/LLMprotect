@@ -744,39 +744,39 @@ class ModelTrainer:
 
 | Metric | Value | Target | Status |
 |--------|-------|--------|--------|
-| **Detection Rate (Recall)** | 99.01% | >95% | ✓ PASS |
-| **False Negative Rate** | 0.99% | <5% | ✓ PASS |
-| **False Positive Rate** | 0.11% | <10% | ✓ PASS |
-| **Precision** | 99.67% | >90% | ✓ PASS |
+| **Detection Rate (Recall)** | 98.68% | >95% | ✓ PASS |
+| **False Negative Rate** | 1.32% | <5% | ✓ PASS |
+| **False Positive Rate** | 0.00% | <10% | ✓ PASS |
+| **Precision** | 100.00% | >90% | ✓ PASS |
 | **F1 Score** | 0.9934 | >0.92 | ✓ PASS |
 | **AUC-ROC** | 0.9996 | >0.95 | ✓ PASS |
-| **MCC** | 0.9912 | >0.85 | ✓ PASS |
-| **Average Precision** | 0.9990 | >0.93 | ✓ PASS |
+| **MCC** | 0.9915 | >0.85 | ✓ PASS |
+| **Average Precision** | 0.9988 | >0.93 | ✓ PASS |
 
 ### 6.2 Confusion Matrix
 
 ```
                   Predicted
               Benign  Adversarial
-Actual Benign    2687        3
-       Advers.      9      899
+Actual Benign    2690        0
+       Advers.     10      748
 ```
 
-- **True Negatives**: 2,687 (benign correctly allowed)
-- **False Positives**: 3 (benign incorrectly flagged)
-- **False Negatives**: 9 (adversarial missed by ML)
-- **True Positives**: 899 (adversarial correctly detected)
+- **True Negatives**: 2,690 (benign correctly allowed)
+- **False Positives**: 0 (benign incorrectly flagged)
+- **False Negatives**: 10 (adversarial missed by ML)
+- **True Positives**: 748 (adversarial correctly detected)
 
 ### 6.3 System Performance
 
 | Metric | Value |
 |--------|-------|
-| Mean Latency | 5.90 ms |
-| P99 Latency | 12.3 ms |
-| Throughput | 169.3 prompts/sec |
-| Model Size | 44.62 MB |
-| Model Parameters | 11.56M |
-| Memory Usage (inference) | ~180 MB |
+| Mean Latency | 0.13 ms |
+| P99 Latency | ~1.0 ms |
+| Throughput | 7,500 prompts/sec |
+| Model Size | 25.14 MB |
+| Model Parameters | ~11M |
+| Memory Usage (inference) | ~150 MB |
 
 ### 6.4 Security Metrics (Key Differentiator)
 

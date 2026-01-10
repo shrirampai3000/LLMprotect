@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLMProtect - Evaluation Metrics</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, var(--primary), #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .metric-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid var(--border);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .metric-card h3 {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .metric-value.success {
+            color: var(--success);
+        }
+
+        .metric-value.warning {
+            color: var(--warning);
+        }
+
+        .metric-value.danger {
+            color: var(--danger);
+        }
+
+        .metric-detail {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+            margin-top: 8px;
+        }
+
+        .section {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid var(--border);
+            margin-bottom: 30px;
+        }
+
+        .section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section h2::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+        }
+
+        td {
+            font-family: 'Fira Code', monospace;
+        }
+
+        .confusion-matrix {
+            display: grid;
+            grid-template-columns: 100px 1fr 1fr;
+            gap: 4px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .cm-cell {
+            padding: 24px;
+            text-align: center;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .cm-header {
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .cm-tp {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .cm-tn {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .cm-fp {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .cm-fn {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .cm-value {
+            font-size: 1.5rem;
+            display: block;
+        }
+
+        .cm-label {
+            font-size: 0.75rem;
+            opacity: 0.8;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-secondary);
+        }
+
+        .loading::after {
+            content: '...';
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+
+            0%,
+            20% {
+                content: '.';
+            }
+
+            40% {
+                content: '..';
+            }
+
+            60%,
+            100% {
+                content: '...';
+            }
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .badge-primary {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--primary);
+        }
+
+        .back-link {
+            display: inline-block;
+            color: var(--primary);
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 0.875rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .paper-note {
+            background: rgba(99, 102, 241, 0.1);
+            border-left: 4px solid var(--primary);
+            padding: 16px 20px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 20px;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .paper-note strong {
+            color: var(--text-primary);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <a href="/static/index.html" class="back-link">← Back to Demo</a>
+
+        <header>
+            <h1>📊 Evaluation Metrics</h1>
+            <p class="subtitle">LLMProtect Adversarial Detection Model Performance</p>
+        </header>
+
+        <div id="loading" class="loading">Loading evaluation metrics</div>
+
+        <div id="content" style="display: none;">
+            <!-- Summary Cards -->
+            <div class="metrics-grid" id="summary-cards"></div>
+
+            <!-- Confusion Matrix -->
+            <div class="section">
+                <h2>Confusion Matrix</h2>
+                <div class="confusion-matrix" id="confusion-matrix">
+                    <div class="cm-cell cm-header"></div>
+                    <div class="cm-cell cm-header">Predicted Positive</div>
+                    <div class="cm-cell cm-header">Predicted Negative</div>
+                    <div class="cm-cell cm-header">Actual Positive</div>
+                    <div class="cm-cell cm-tp" id="cm-tp"><span class="cm-value">-</span><span class="cm-label">True
+                            Positive</span></div>
+                    <div class="cm-cell cm-fn" id="cm-fn"><span class="cm-value">-</span><span class="cm-label">False
+                            Negative</span></div>
+                    <div class="cm-cell cm-header">Actual Negative</div>
+                    <div class="cm-cell cm-fp" id="cm-fp"><span class="cm-value">-</span><span class="cm-label">False
+                            Positive</span></div>
+                    <div class="cm-cell cm-tn" id="cm-tn"><span class="cm-value">-</span><span class="cm-label">True
+                            Negative</span></div>
+                </div>
+            </div>
+
+            <!-- Detailed Metrics Table -->
+            <div class="section">
+                <h2>Detailed Metrics</h2>
+                <table id="metrics-table">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Value</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody id="metrics-body"></tbody>
+                </table>
+
+                <div class="paper-note">
+                    <strong>📝 Note for Research Paper:</strong> These are the actual training evaluation results.
+                    For paper submission, consider using the conservative metrics from
+                    <code>/evaluation</code> API endpoint under the <code>paper_metrics</code> key.
+                </div>
+            </div>
+
+            <!-- Per-Category Performance (if available) -->
+            <div class="section" id="category-section" style="display: none;">
+                <h2>Per-Category Performance</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Attack Category</th>
+                            <th>Precision</th>
+                            <th>Recall</th>
+                            <th>F1 Score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="category-body"></tbody>
+                </table>
+            </div>
+
+            <!-- Model Info -->
+            <div class="section">
+                <h2>Model Information</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Value</th>
+                        </tr>
+                    </thead>
+                    <tbody id="model-info"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadMetrics() {
+            try {
+                const response = await fetch('/evaluation');
+                const data = await response.json();
+
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+
+                renderMetrics(data);
+            } catch (error) {
+                document.getElementById('loading').textContent = 'Error loading metrics: ' + error.message;
+            }
+        }
+
+        function renderMetrics(data) {
+            const te = data.training_evaluation || {};
+            const cm = te.confusion_matrix || {};
+
+            // Summary Cards
+            const summaryCards = document.getElementById('summary-cards');
+            const cards = [
+                { title: 'Detection Rate', value: ((te.detection_rate || 0) * 100).toFixed(2) + '%', class: 'success', detail: 'Adversarial prompts correctly identified' },
+                { title: 'F1 Score', value: (te.f1_score || 0).toFixed(4), class: 'success', detail: 'Harmonic mean of precision and recall' },
+                { title: 'Precision', value: (te.precision || 0).toFixed(4), class: 'success', detail: 'True positives / (True positives + False positives)' },
+                { title: 'AUC-ROC', value: (te.auc_roc || 0).toFixed(4), class: 'success', detail: 'Area under ROC curve' },
+                { title: 'False Negative Rate', value: ((te.false_negative_rate || 0) * 100).toFixed(2) + '%', class: te.false_negative_rate < 0.02 ? 'success' : 'warning', detail: 'Adversarial prompts incorrectly passed' },
+                { title: 'Mean Latency', value: (te.mean_latency_ms || 0).toFixed(2) + 'ms', class: 'primary', detail: 'Average inference time per prompt' },
+            ];
+
+            summaryCards.innerHTML = cards.map(card => `
+                <div class="metric-card">
+                    <h3>${card.title}</h3>
+                    <div class="metric-value ${card.class}">${card.value}</div>
+                    <div class="metric-detail">${card.detail}</div>
+                </div>
+            `).join('');
+
+            // Confusion Matrix
+            document.querySelector('#cm-tp .cm-value').textContent = cm.tp || 0;
+            document.querySelector('#cm-tn .cm-value').textContent = cm.tn || 0;
+            document.querySelector('#cm-fp .cm-value').textContent = cm.fp || 0;
+            document.querySelector('#cm-fn .cm-value').textContent = cm.fn || 0;
+
+            // Detailed Metrics Table
+            const metricsBody = document.getElementById('metrics-body');
+            const metrics = [
+                ['Detection Rate', ((te.detection_rate || 0) * 100).toFixed(4) + '%', 'Percentage of adversarial prompts correctly identified'],
+                ['False Negative Rate', ((te.false_negative_rate || 0) * 100).toFixed(4) + '%', 'Percentage of adversarial prompts incorrectly classified as benign'],
+                ['False Positive Rate', ((te.false_positive_rate || 0) * 100).toFixed(4) + '%', 'Percentage of benign prompts incorrectly classified as adversarial'],
+                ['Precision', (te.precision || 0).toFixed(6), 'TP / (TP + FP)'],
+                ['F1 Score', (te.f1_score || 0).toFixed(6), '2 * (Precision * Recall) / (Precision + Recall)'],
+                ['AUC-ROC', (te.auc_roc || 0).toFixed(6), 'Area under the ROC curve'],
+                ['MCC', (te.mcc || 0).toFixed(6), 'Matthews Correlation Coefficient'],
+                ['Average Precision', (te.average_precision || 0).toFixed(6), 'Precision-Recall AUC'],
+                ['Mean Latency', (te.mean_latency_ms || 0).toFixed(4) + ' ms', 'Average inference time per prompt'],
+                ['Throughput', (te.throughput_per_second || 0).toFixed(2) + ' prompts/s', 'Processing speed'],
+                ['Model Size', (te.model_size_mb || 0).toFixed(2) + ' MB', 'Model file size'],
+            ];
+
+            metricsBody.innerHTML = metrics.map(m => `
+                <tr>
+                    <td>${m[0]}</td>
+                    <td>${m[1]}</td>
+                    <td style="color: var(--text-secondary)">${m[2]}</td>
+                </tr>
+            `).join('');
+
+            // Per-Category Performance (from paper metrics)
+            const paperMetrics = data.paper_metrics || {};
+            if (paperMetrics.by_attack_category) {
+                document.getElementById('category-section').style.display = 'block';
+                const categoryBody = document.getElementById('category-body');
+                const categories = paperMetrics.by_attack_category;
+
+                categoryBody.innerHTML = Object.entries(categories).map(([name, metrics]) => `
+                    <tr>
+                        <td>${name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</td>
+                        <td>${(metrics.precision * 100).toFixed(1)}%</td>
+                        <td>${(metrics.recall * 100).toFixed(1)}%</td>
+                        <td>${(metrics.f1_score * 100).toFixed(1)}%</td>
+                    </tr>
+                `).join('');
+            }
+
+            // Model Info
+            const modelInfo = document.getElementById('model-info');
+            const info = data.model_info || {};
+            modelInfo.innerHTML = `
+                <tr><td>Model File</td><td>${info.model_file || 'best_model.pt'}</td></tr>
+                <tr><td>Model Size</td><td>${(info.model_size_mb || 0).toFixed(2)} MB</td></tr>
+                <tr><td>Architecture</td><td>Hybrid CNN-Transformer</td></tr>
+                <tr><td>Parameters</td><td>~25M</td></tr>
+                <tr><td>Vocabulary Size</td><td>~10,600 tokens</td></tr>
+                <tr><td>Max Sequence Length</td><td>512 tokens</td></tr>
+            `;
+        }
+
+        // Load metrics on page load
+        loadMetrics();
+    </script>
+</body>
+
+</html>
