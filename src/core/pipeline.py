@@ -12,7 +12,7 @@ from dataclasses import dataclass
 from ..models.inference import InferencePipeline
 from ..crypto.keys import KeyManager
 from ..crypto.signing import AuthorizationManager, AuthorizationToken
-from ..crypto.merkle import AuditLog
+from ..crypto.audit_chain import AuditLog
 
 
 @dataclass

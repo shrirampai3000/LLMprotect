@@ -10,7 +10,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from src.crypto.keys import KeyManager, KeyPair
 from src.crypto.signing import AuthorizationManager, AuthorizationToken, NonceStore
-from src.crypto.merkle import AuditLog
+from src.crypto.audit_chain import AuditLog
 
 
 class TestKeyManager:

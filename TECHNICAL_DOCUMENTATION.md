@@ -315,7 +315,7 @@ d:\anti-llm\
 │   ├── crypto/                 # Cryptographic layer
 │   │   ├── keys.py             # Ed25519 key management
 │   │   ├── signing.py          # Authorization tokens
-│   │   └── merkle.py           # Hash-chain audit log
+│   │   └── audit_chain.py      # Hash-chain audit log
 │   ├── core/                   # Integration
 │   │   ├── pipeline.py         # Unified detection pipeline
 │   │   └── credentials.py      # Scoped credential management
