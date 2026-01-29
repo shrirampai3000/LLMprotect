@@ -2,7 +2,7 @@
 
 ## Abstract
 
-Large Language Model (LLM) agents capable of autonomous action execution present novel security challenges that traditional ML-only detection approaches cannot fully address. This paper presents a hybrid defense system combining a custom CNN-Transformer adversarial detection model with cryptographic authorization enforcement. Our approach ensures that even when ML detection fails, cryptographic binding prevents unauthorized action execution—achieving a **0% unauthorized execution rate**. Trained on 35,979 examples including real exploit payloads from security research repositories, we achieve **F1=0.9934**, **AUC-ROC=0.9996**, and **5.90ms latency**, demonstrating production-viable security for agentic AI systems.
+Large Language Model (LLM) agents capable of autonomous action execution present novel security challenges that traditional ML-only detection approaches cannot fully address. This paper presents a hybrid defense system combining a custom CNN-Transformer adversarial detection model with cryptographic authorization enforcement. Our approach ensures that even when ML detection fails, cryptographic binding prevents unauthorized action execution—achieving a **0% unauthorized execution rate**. Trained on ~41,000 examples including real exploit payloads from security research repositories, we achieve **F1=0.9934**, **AUC-ROC=0.9996**, and **5.90ms latency**, demonstrating production-viable security for agentic AI systems.
 
 **Keywords**: Prompt Injection, Adversarial Detection, Cryptographic Authorization, LLM Security, CNN-Transformer, Ed25519
 
@@ -568,8 +568,9 @@ def verify_chain_integrity(entries: List[AuditEntry]) -> bool:
 | **Mindgard/evaded-injections** | HuggingFace | Adversarial | 1,000 | Evasion-enhanced injections |
 | Anthropic/hh-rlhf | HuggingFace | Benign | 15,000 | Human conversations |
 | tatsu-lab/alpaca | HuggingFace | Benign | 10,000 | Instruction-following |
+| Synthetic Generation | Internal | Augmentation | ~2,000 | Robustness augmentation |
 
-**Total**: ~41,000 examples (100% real data, no synthetic generation)
+**Total**: ~41,000 examples (Predominantly real data with <5% synthetic augmentation)
 
 ### 4.2 Real Payload Extraction Pipeline
 
@@ -787,7 +788,7 @@ Actual Benign    2690        0
 | Replay Attack Prevention | 100% | Nonce + expiry |
 | Audit Chain Integrity | 100% | SHA-256 chaining |
 
-> **Critical**: Even when ML detection fails (9 false negatives), the cryptographic layer ensures those prompts cannot execute unauthorized actions without valid signatures.
+> **Critical**: Even when ML detection fails (10 false negatives), the cryptographic layer ensures those prompts cannot execute unauthorized actions without valid signatures.
 
 ---
 

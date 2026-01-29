@@ -35,6 +35,7 @@ The model was trained on a mixed dataset comprising:
 | AgentHarm Dataset | Real-world | ~1,500 |
 | Alpaca Instructions | Benign | ~5,000 |
 | HH-RLHF | Benign | ~5,000 |
+| Synthetic Generation | Augmentation | ~2,000 |
 
 ### Attack Categories Covered
 1. **Direct Prompt Injection** - Attempts to override system instructions
@@ -94,7 +95,7 @@ The model was trained on a mixed dataset comprising:
 
 ### Dependencies
 - PyTorch 2.0+
-- Python 3.8+
+- Python 3.9+
 - See `requirements.txt` for full list
 
 ## How to Use

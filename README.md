@@ -213,9 +213,11 @@ OUTPUT: P(adversarial) ∈ [0, 1]
 | Dataset | Source | Description |
 |---------|--------|-------------|
 | Anthropic/hh-rlhf | HuggingFace | Human conversations |
+| Anthropic/hh-rlhf | HuggingFace | Human conversations |
 | tatsu-lab/alpaca | HuggingFace | Instruction-following |
+| Synthetic Generation | Internal | <10% data augmentation for robustness |
 
-**Total**: ~41,000 examples (100% real data)
+**Total**: ~41,000 examples (Predominantly real data with minor synthetic augmentation)
 
 ## 🧪 Running Tests
 
@@ -246,5 +248,5 @@ Research Team - Advanced AI Security
 
 ---
 
-**Document Version**: 1.1  
-**Last Updated**: January 10, 2026
+**Document Version**: 1.2  
+**Last Updated**: January 29, 2026

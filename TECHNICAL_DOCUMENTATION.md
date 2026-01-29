@@ -180,8 +180,9 @@ Entry1 ─→ Entry2 ─→ Entry3 ─→ Entry4
 | **Mindgard/evaded-injections** | HuggingFace | Adversarial | ~1,000 | Evasion-enhanced injections |
 | Anthropic/hh-rlhf | HuggingFace | Benign | ~15,000 | Human conversations |
 | tatsu-lab/alpaca | HuggingFace | Benign | ~10,000 | Instruction-following |
+| Synthetic Generation | Internal | Augmentation | ~2,000 | Robustness augmentation |
 
-**Total Dataset Size**: ~41,000 examples (100% real data, no synthetic generation)
+**Total Dataset Size**: ~41,000 examples (Predominantly real data with <5% synthetic augmentation)
 
 > **Important**: SQL, Command, SSRF, Path, and XSS categories use **real-world exploit payloads** from security research repositories, adapted into LLM agent instruction contexts.
 
@@ -433,8 +434,8 @@ This is a **prototype system** demonstrating how AI and cryptography can be comb
 
 ---
 
-**Document Version**: 1.2  
-**Date**: January 10, 2026  
+**Document Version**: 1.3  
+**Date**: January 29, 2026  
 **Status**: Production Ready  
 **Test Results**: 77/77 tests passing
 **GitHub**: https://github.com/shrirampai3000/LLMprotect
